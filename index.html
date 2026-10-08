@@ -101,7 +101,7 @@ textarea,input[type=text],input[type=password]{font:inherit;font-family:var(--rd
 @media (min-width:720px){.rd{font-size:30px}.split{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;align-items:start}}
 </style>
 <div id="defs"></div>
-<div class="top" dir="rtl"><button class="ib" id="bk" aria-label="رجوع" hidden>›</button><h1 id="ttl">أُحِبُّ لُغَتِي</h1><span class="pill" id="st" hidden>★ <span id="stn">٠</span></span><button class="ib" id="who" aria-label="تبديل الطالب" hidden></button></div>
+<div class="top" dir="rtl"><button class="ib" id="bk" aria-label="رجوع" hidden>›</button><h1 id="ttl">أُحِبُّ لُغَتِي</h1><span class="pill" id="st" hidden>★ <span id="stn">٠</span></span></div>
 <main id="app" dir="rtl" lang="ar"></main>
 <div class="foot" dir="rtl">إعداد: <b>فاطمة بنت سالم بن حسن البلوشي</b></div>
 <script>
@@ -341,7 +341,7 @@ let DB={st:{},cur:null,content:{},pin:'1234',last:null},SITE={};
 try{Object.assign(DB,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}};
 const me=()=>DB.st[DB.cur];
-const G_=(m,f)=>me()&&me().av==='g'?f:m;
+const G_=()=>'أَحْسَنْتُمْ';
 const LP=(id,m=me())=>{m.L=m.L||{};const p=m.L[id]=m.L[id]||{};['stg','games','scenes','hot'].forEach(k=>p[k]=p[k]||{});p.reads=p.reads||[];return p};
 const Lof=id=>LESSONS.find(l=>l.id===id);
 fetch('content.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j==='object'){SITE=j;redraw()}}).catch(()=>{});
@@ -414,13 +414,13 @@ const lessonPct=(L,m=me())=>{const keep=DB.cur;const p=LP(L.id,m);let d=0;d+=p.s
 let stack=[],cleanup=[];
 function stopAll(){try{speechSynthesis.cancel()}catch(e){}cleanup.forEach(f=>{try{f()}catch(e){}});cleanup=[]}
 function go(fn,...a){stack.push([fn,a]);draw()}
-function back(){stack.pop();if(!stack.length)stack=[[me()?home:login,[]]];draw()}
+function back(){stack.pop();if(!stack.length)stack=[[home,[]]];draw()}
 function draw(){stopAll();const [fn,a]=stack[stack.length-1];fn(...a);chrome();window.scrollTo(0,0)}
-function redraw(){if(stack.length&&!$('.modal')&&!$('.ar')){const [fn,a]=stack[stack.length-1];if(fn===home||fn===login)draw()}}
+function redraw(){if(stack.length&&!$('.modal')&&!$('.ar')){const [fn,a]=stack[stack.length-1];if(fn===home)draw()}}
 function T(t){$('#ttl').textContent=t}
-function chrome(){$('#bk').hidden=stack.length<2;const m=me();$('#st').hidden=!m;$('#who').hidden=!m;if(m){$('#stn').textContent=n(stars());$('#who').innerHTML=AVATAR[m.av]().replace('<svg','<svg width="34"')}}
-$('#bk').onclick=back;$('#who').onclick=()=>{stack=[[login,[]]];draw()};
-setInterval(()=>{if(me()&&document.visibilityState==='visible'&&stack.length&&stack[0][0]!==login){me().sec=(me().sec||0)+5;if(me().sec%30===0)save()}},5000);
+function chrome(){$('#bk').hidden=stack.length<2;const m=me();$('#st').hidden=!m;if(m)$('#stn').textContent=n(stars())}
+$('#bk').onclick=back;
+setInterval(()=>{if(me()&&document.visibilityState==='visible'&&stack.length){me().sec=(me().sec||0)+5;if(me().sec%30===0)save()}},5000);
 
 /* ===== المشهد ===== */
 function sceneSVG(L,i,o={}){const [bg,fg]=ART[L.id][i](),sc=L.scenes[i],seen=o.seen||{};
@@ -475,24 +475,15 @@ function openAR(L,i){
 function sceneModal(L,i){const sc=L.scenes[i];const m=modal(`<h3>${sc.t}</h3><div class="scn" id="msc">${sceneSVG(L,i)}</div><div id="mpop" class="note">اِلْمِسِ الدَّوَائِرَ الْمُضِيئَةَ لِتَقْرَأَ كَلِمَاتِ الْمَشْهَدِ.</div><div class="row c"><button class="btn y" id="mar">اِعْرِضْ فِي مَكَانِي بِالْكَامِيرَا</button><button class="btn w" data-x>عَوْدَةٌ إِلَى اللُّعْبَةِ</button></div>`);
   $('#msc',m).onclick=e=>{const g=e.target.closest('.hot');if(!g)return;const h=sc.h[+g.dataset.h];g.classList.add('seen');const p=$('#mpop',m);p.className='';p.innerHTML=hotCard(h);bindHot(p,h);speak(h.w)};$('#mar',m).onclick=()=>openAR(L,i)}
 /* ===== الدخول والصفحة الرئيسة ===== */
-function login(){T('أُحِبُّ لُغَتِي');const ids=Object.keys(DB.st);let av='b';
-  app.innerHTML=`<div class="col"><div class="card col" style="text-align:center"><h2>الْأَلْعَابُ التَّعْلِيمِيَّةُ الْقَائِمَةُ عَلَى الْوَاقِعِ الْمُعَزَّزِ</h2><div class="mut">تَنْمِيَةُ مَهَارَاتِ الْقِرَاءَةِ وَالدَّافِعِيَّةِ لِلتَّعَلُّمِ · الصَّفُّ الرَّابِعُ · كِتَابُ «أُحِبُّ لُغَتِي»</div></div>
-  ${ids.length?`<div class="card col"><h3>أَنَا هُنَا مِنْ قَبْلُ</h3><div class="row">${ids.map(id=>`<button class="face" data-id="${id}">${AVATAR[DB.st[id].av]()}<span>${esc(DB.st[id].name)}</span></button>`).join('')}</div></div>`:''}
-  <div class="card col"><h3>قَارِئٌ جَدِيدٌ</h3><label for="nm">اُكْتُبِ اسْمَكَ</label><input type="text" id="nm" maxlength="30" autocomplete="off"><div>اِخْتَرْ شَخْصِيَّتَكَ</div><div class="row c"><button class="face" data-av="b" id="avb" style="border-color:var(--sea)">${AVATAR.b()}<span>طَالِبٌ</span></button><button class="face" data-av="g" id="avg">${AVATAR.g()}<span>طَالِبَةٌ</span></button></div><button class="btn g" id="enter">اِبْدَأْ</button></div>
-  <button class="btn w sm" id="tch" style="align-self:center">لَوْحَةُ الْمُعَلِّمِ</button></div>`;
-  $$('.face[data-av]').forEach(b=>b.onclick=()=>{av=b.dataset.av;$('#avb').style.borderColor=av==='b'?'var(--sea)':'';$('#avg').style.borderColor=av==='g'?'var(--sea)':''});
-  $$('.face[data-id]').forEach(b=>b.onclick=()=>{DB.cur=b.dataset.id;save();stack=[[home,[]]];draw()});
-  $('#enter').onclick=()=>{const nm=$('#nm').value.trim();if(!nm){toast('اُكْتُبِ اسْمَكَ أَوَّلًا.');$('#nm').focus();return}const id='s'+Date.now();DB.st[id]={name:nm,av,badges:[],sec:0,L:{},at:Date.now()};DB.cur=id;save();stack=[[home,[]]];draw()};
-  $('#tch').onclick=askPin}
+const DUO=`<svg viewBox="-55 -80 110 84">${kid(-25,0,{wear:'dish',face:'l'})}${kid(25,0,{wear:'uni',face:'l'})}</svg>`;
 function home(){const m=me();T('أُحِبُّ لُغَتِي');
   const next=LESSONS.find(L=>lessonPct(L)<100)||LESSONS[0],tot=Math.round(LESSONS.reduce((a,L)=>a+lessonPct(L),0)/5);
-  app.innerHTML=`<div class="col"><div class="hero">${AVATAR[m.av]('l')}<div class="say">مَرْحَبًا ${esc(m.name)}! أَنَا مُرْشِدُكَ فِي رِحْلَةِ الْقِرَاءَةِ. اِخْتَرْ دَرْسًا وَابْدَأِ الْمُغَامَرَةَ.</div></div>
-  <div class="card col" style="gap:8px"><div class="row" style="justify-content:space-between"><b>تَقَدُّمِي</b><b>${n(tot)}٪</b></div><div class="bar"><i style="width:${tot}%"></i></div>
-  <div class="row c"><button class="btn g" id="start">اِبْدَأِ الْمُغَامَرَةَ</button>${DB.last&&Lof(DB.last)?`<button class="btn" id="cont">مُتَابَعَةُ التَّعَلُّمِ</button>`:''}<button class="btn y" id="ach">إِنْجَازَاتِي</button><button class="btn w" id="help">التَّعْلِيمَاتُ الصَّوْتِيَّةُ</button></div></div>
-  <div class="grid">${LESSONS.map(L=>`<button class="lc" data-l="${L.id}">${thumb(L,0)}<div class="b"><div class="mut">الدَّرْسُ ${n(L.id)} · ${L.kind}</div><div class="n" style="color:${L.c}">${L.t}</div><div class="bar"><i style="width:${lessonPct(L)}%"></i></div></div></button>`).join('')}</div>
-  <button class="btn w sm" id="tch" style="align-self:center">لَوْحَةُ الْمُعَلِّمِ</button></div>`;
+  app.innerHTML=`<div class="col"><div class="card col" style="text-align:center;gap:4px"><h2>الْأَلْعَابُ التَّعْلِيمِيَّةُ الْقَائِمَةُ عَلَى الْوَاقِعِ الْمُعَزَّزِ</h2><div class="mut">تَنْمِيَةُ مَهَارَاتِ الْقِرَاءَةِ وَالدَّافِعِيَّةِ لِلتَّعَلُّمِ · الصَّفُّ الرَّابِعُ · كِتَابُ «أُحِبُّ لُغَتِي»</div></div><div class="hero">${DUO}<div class="say">مَرْحَبًا بِكُمْ! نَحْنُ مُرْشِدَاكُمْ فِي رِحْلَةِ الْقِرَاءَةِ. نَخْتَارُ دَرْسًا وَنَبْدَأُ الْمُغَامَرَةَ مَعًا.</div></div>
+  <div class="card col" style="gap:8px"><div class="row" style="justify-content:space-between"><b>تَقَدُّمُنَا</b><b>${n(tot)}٪</b></div><div class="bar"><i style="width:${tot}%"></i></div>
+  <div class="row c"><button class="btn g" id="start">اِبْدَأِ الْمُغَامَرَةَ</button>${DB.last&&Lof(DB.last)?`<button class="btn" id="cont">مُتَابَعَةُ التَّعَلُّمِ</button>`:''}<button class="btn y" id="ach">إِنْجَازَاتُنَا</button><button class="btn w" id="help">التَّعْلِيمَاتُ الصَّوْتِيَّةُ</button></div></div>
+  <div class="grid">${LESSONS.map(L=>`<button class="lc" data-l="${L.id}">${thumb(L,0)}<div class="b"><div class="mut">الدَّرْسُ ${n(L.id)} · ${L.kind}</div><div class="n" style="color:${L.c}">${L.t}</div><div class="bar"><i style="width:${lessonPct(L)}%"></i></div></div></button>`).join('')}</div></div>`;
   $$('.lc').forEach(b=>b.onclick=()=>go(lesson,Lof(+b.dataset.l)));$('#start').onclick=()=>go(lesson,next);if($('#cont'))$('#cont').onclick=()=>go(lesson,Lof(DB.last));
-  $('#ach').onclick=()=>go(achievements);$('#tch').onclick=askPin;
+  $('#ach').onclick=()=>go(achievements);
   $('#help').onclick=()=>speak('مَرْحَبًا بِكَ. اِخْتَرْ دَرْسًا مِنَ الدُّرُوسِ الْخَمْسَةِ. فِي كُلِّ دَرْسٍ سِتُّ مَرَاحِلَ: أَسْتَكْشِفُ، ثُمَّ أَقْرَأُ وَأَفْهَمُ، ثُمَّ أَلْعَبُ وَأَتَعَلَّمُ، ثُمَّ أَعِيشُ الْوَاقِعَ الْمُعَزَّزَ، ثُمَّ أَقْرَأُ بِطَلَاقَةٍ، ثُمَّ أُقَيِّمُ تَقَدُّمِي. اِلْمِسِ الدَّوَائِرَ الْمُضِيئَةَ فِي الْمَشَاهِدِ لِتَسْمَعَ الْكَلِمَاتِ، وَاجْمَعِ النُّجُومَ.')}
 function lesson(L){T(L.t);DB.last=L.id;save();const P=LP(L.id);
   app.innerHTML=`<div class="col"><div class="card row" style="flex-wrap:nowrap"><div class="thumb">${thumb(L,0)}</div><div style="min-width:0"><div class="mut">الدَّرْسُ ${n(L.id)} · ${L.kind}</div><h2 style="color:${L.c}">${L.t}</h2><div class="mut">${L.by}</div></div></div>
@@ -501,7 +492,7 @@ function lesson(L){T(L.t);DB.last=L.id;save();const P=LP(L.id);
   $$('.stg').forEach(b=>b.onclick=F[+b.dataset.s])}
 function readView(L){T('أَقْرَأُ وَأَفْهَمُ');const t=srcText(L);
   app.innerHTML=`<div class="col"><h2>${L.story&&!t.orig?L.story.t:L.t}</h2>
-  ${t.orig?'':L.own?`<div class="note">دَرْسُ الْقِرَاءَةِ الْحُرَّةِ لَيْسَ لَهُ نَصٌّ فِي الْكِتَابِ. هَذِهِ قِصَّةٌ قَصِيرَةٌ مِنْ إِعْدَادِ الْمِنَصَّةِ، وَيَسْتَطِيعُ الْمُعَلِّمُ اسْتِبْدَالَهَا.</div>`:`<div class="note">النَّصُّ الْأَصْلِيُّ فِي الْكِتَابِ (ص ${L.pages}) يُضِيفُهُ الْمُعَلِّمُ مِنْ لَوْحَةِ الْمُعَلِّمِ. هَذِهِ جُمَلٌ تَلْخِيصِيَّةٌ لِأَحْدَاثِ الدَّرْسِ لِلتَّدْرِيبِ.</div>`}
+  ${t.orig?'':L.own?`<div class="note">دَرْسُ الْقِرَاءَةِ الْحُرَّةِ لَيْسَ لَهُ نَصٌّ فِي الْكِتَابِ. هَذِهِ قِصَّةٌ قَصِيرَةٌ مِنْ إِعْدَادِ الْمِنَصَّةِ.</div>`:`<div class="note">النَّصُّ الْأَصْلِيُّ فِي الْكِتَابِ (ص ${L.pages}). هَذِهِ جُمَلٌ تَلْخِيصِيَّةٌ لِأَحْدَاثِ الدَّرْسِ لِلتَّدْرِيبِ.</div>`}
   <div class="row"><button class="btn" id="la">اِسْتَمِعْ إِلَى النَّصِّ</button><button class="btn w sm" id="ls">أَوْقِفِ الصَّوْتَ</button></div>
   <div class="card rd txt" id="tx">${t.paras.map(p=>`<p style="margin:0 0 10px">${colored(p)}</p>`).join('')}</div><div class="mut">اِلْمِسْ أَيَّ كَلِمَةٍ لِتَسْمَعَ نُطْقَهَا.</div>
   <h3>مُفْرَدَاتُ الدَّرْسِ</h3><div class="grid">${L.vocab.map(v=>`<button class="lc" style="padding:8px 14px" data-v="${v[0]}"><span class="rd" style="font-weight:700;color:${L.c}">${v[0]}</span><span class="rd" style="font-size:20px">${v[1]}</span></button>`).join('')}</div>
@@ -575,7 +566,7 @@ opinion(cx){const d=cx.g.d,ch={};const pick=(title,arr,key,next)=>{cx.el.innerHT
 /* ===== أقرأ بطلاقة ===== */
 function fluency(L,lv){T('أَقْرَأُ بِطَلَاقَةٍ');const P=LP(L.id),LV=levels(L),ref=LV[lv][1],src=srcText(L);
   app.innerHTML=`<div class="col"><div class="tabs">${LV.map((x,i)=>`<button class="${i===lv?'on':''}" data-lv="${i}">${n(i+1)}. ${x[0]}</button>`).join('')}</div>
-  ${src.orig?'':`<div class="note">${L.own?'نَصُّ التَّدْرِيبِ قِصَّةٌ مِنْ إِعْدَادِ الْمِنَصَّةِ.':'نَصُّ التَّدْرِيبِ جُمَلٌ تَلْخِيصِيَّةٌ. يَظْهَرُ نَصُّ الْكِتَابِ هُنَا بَعْدَ أَنْ يُضِيفَهُ الْمُعَلِّمُ.'}</div>`}
+  ${src.orig?'':`<div class="note">${L.own?'نَصُّ التَّدْرِيبِ قِصَّةٌ مِنْ إِعْدَادِ الْمِنَصَّةِ.':'نَصُّ التَّدْرِيبِ جُمَلٌ تَلْخِيصِيَّةٌ. يَظْهَرُ نَصُّ الْكِتَابِ هُنَا بَعْدَ إِضَافَتِهِ إِلَى مِلَفِّ الْمُحْتَوَى.'}</div>`}
   <div class="card rd txt" id="ft" style="white-space:pre-line">${colored(ref)}</div>
   <div class="row c"><button class="btn" id="fl">اِسْتَمِعْ إِلَى الْقِرَاءَةِ النَّمُوذَجِيَّةِ</button><button class="btn r" id="fs">اِبْدَأِ الْقِرَاءَةَ</button></div>
   <div id="fst" class="mut" style="text-align:center;min-height:1.9em"></div><div id="frp"></div><div id="fh"></div></div>`;
@@ -594,10 +585,10 @@ function fluency(L,lv){T('أَقْرَأُ بِطَلَاقَةٍ');const P=LP(L
     ${weak.length?`<div><b>كَلِمَاتٌ أَتَدَرَّبُ عَلَيْهَا (اِلْمِسْهَا لِتَسْمَعَهَا):</b><div class="row" id="wk">${weak.map(w=>`<button class="chip" style="font-size:21px">${esc(w)}</button>`).join('')}</div></div>`:'<b style="color:var(--ok)">قَرَأْتَ كُلَّ الْكَلِمَاتِ قِرَاءَةً صَحِيحَةً.</b>'}
     <div class="mut">التَّصْحِيحُ يُقَارِنُ الْكَلِمَاتِ الْمَسْمُوعَةَ بِكَلِمَاتِ النَّصِّ، وَلَا يَحْكُمُ عَلَى ضَبْطِ الْحَرَكَاتِ. الْمُعَلِّمُ هُوَ الْمَرْجِعُ فِي الْحُكْمِ النِّهَائِيِّ.</div></div>`;
     if($('#wk'))$('#wk').onclick=e=>{const b=e.target.closest('.chip');if(b)speak(b.textContent)};hist()};
-  const noSR=e=>{if(!$('#fs'))return;idle();$('#fst').innerHTML='';$('#frp').innerHTML=`<div class="card col"><h3>التَّصْحِيحُ غَيْرُ مُتَوَفِّرٍ</h3><div class="note">${SRMSG(e)}</div><div>يُمْكِنُكَ تَسْجِيلُ قِرَاءَتِكَ لِيَسْتَمِعَ إِلَيْهَا الْمُعَلِّمُ عَلَى هَذَا الْجِهَازِ.</div><div class="row"><button class="btn r" id="rcb">سَجِّلْ قِرَاءَتِي</button></div><div id="rcf"></div></div>`;
+  const noSR=e=>{if(!$('#fs'))return;idle();$('#fst').innerHTML='';$('#frp').innerHTML=`<div class="card col"><h3>التَّصْحِيحُ غَيْرُ مُتَوَفِّرٍ</h3><div class="note">${SRMSG(e)}</div><div>يُمْكِنُ تَسْجِيلُ الْقِرَاءَةِ وَالِاسْتِمَاعُ إِلَيْهَا هُنَا.</div><div class="row"><button class="btn r" id="rcb">سَجِّلْ قِرَاءَتِي</button></div><div id="rcf"></div></div>`;
     let mr=null,chunks=[],st=null,r0=0;$('#rcb').onclick=()=>{if(mr){mr.stop();return}
       if(!navigator.mediaDevices||!window.MediaRecorder){$('#rcf').innerHTML='<div class="note">التَّسْجِيلُ غَيْرُ مُتَوَفِّرٍ فِي هَذَا الْمُتَصَفِّحِ.</div>';return}
-      navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{st=s;chunks=[];mr=new MediaRecorder(s);r0=Date.now();mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{s.getTracks().forEach(t=>t.stop());const blob=new Blob(chunks,{type:mr.mimeType});mr=null;$('#rcb').textContent='سَجِّلْ مَرَّةً أُخْرَى';recPut({id:DB.cur+'-'+L.id+'-'+lv,name:me().name,lesson:L.id,lv,blob,dur:Math.round((Date.now()-r0)/1000),at:Date.now()});setStage(L,4);$('#rcf').innerHTML=`<b style="color:var(--ok)">حُفِظَ التَّسْجِيلُ عَلَى هَذَا الْجِهَازِ لِمُرَاجَعَةِ الْمُعَلِّمِ.</b><audio controls src="${URL.createObjectURL(blob)}" style="width:100%"></audio>`};mr.start();$('#rcb').textContent='أَنْهِ التَّسْجِيلَ';$('#rcf').innerHTML='<span class="rec">● جَارٍ التَّسْجِيلُ...</span>'}).catch(()=>{$('#rcf').innerHTML='<div class="note">لَمْ يُسْمَحْ بِاسْتِخْدَامِ الْمِيكْرُوفُونِ فِي هَذِهِ الصَّفْحَةِ.</div>'})};
+      navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{st=s;chunks=[];mr=new MediaRecorder(s);r0=Date.now();mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{s.getTracks().forEach(t=>t.stop());const blob=new Blob(chunks,{type:mr.mimeType});mr=null;$('#rcb').textContent='سَجِّلْ مَرَّةً أُخْرَى';recPut({id:DB.cur+'-'+L.id+'-'+lv,name:me().name,lesson:L.id,lv,blob,dur:Math.round((Date.now()-r0)/1000),at:Date.now()});setStage(L,4);$('#rcf').innerHTML=`<b style="color:var(--ok)">اِنْتَهَى التَّسْجِيلُ. اِسْتَمِعُوا إِلَيْهِ:</b><audio controls src="${URL.createObjectURL(blob)}" style="width:100%"></audio>`};mr.start();$('#rcb').textContent='أَنْهِ التَّسْجِيلَ';$('#rcf').innerHTML='<span class="rec">● جَارٍ التَّسْجِيلُ...</span>'}).catch(()=>{$('#rcf').innerHTML='<div class="note">لَمْ يُسْمَحْ بِاسْتِخْدَامِ الْمِيكْرُوفُونِ فِي هَذِهِ الصَّفْحَةِ.</div>'})};
     cleanup.push(()=>{try{mr&&mr.stop();st&&st.getTracks().forEach(t=>t.stop())}catch(e){}})};
   $('#fs').onclick=()=>{if(h){$('#fst').textContent='جَارٍ تَحْلِيلُ الْقِرَاءَةِ...';h.stop();return}try{speechSynthesis.cancel()}catch(e){}$('#frp').innerHTML='';$('#ft').innerHTML=colored(ref);t0=Date.now();
     h=listen({onText:t=>{$('#fst').innerHTML='<span class="rec">● أَسْتَمِعُ:</span> '+esc(t.split(/\s+/).slice(-8).join(' '))},onEnd:finish,onErr:noSR});
@@ -619,42 +610,11 @@ function report(L){const P=LP(L.id),br=P.reads.length?P.reads.reduce((a,b)=>b.ac
   <div class="row c"><button class="btn w" id="rq">أَعِدِ التَّقْوِيمَ</button><button class="btn g" id="hm">إِلَى الدُّرُوسِ</button></div></div>`;
   $('#rq').onclick=()=>{stack[stack.length-1][1][1]=true;draw();stack[stack.length-1][1][1]=false};$('#hm').onclick=()=>{stack=[[home,[]]];draw()}}
 function achievements(){T('إِنْجَازَاتِي');const m=me(),bg=m.badges||[];
-  app.innerHTML=`<div class="col"><div class="hero">${AVATAR[m.av]('l')}<div class="say">جَمَعْتَ <span class="stars" style="font-size:22px">★ ${n(stars())}</span> نَجْمَةً، وَحَصَلْتَ عَلَى ${n(bg.length)} مِنْ ${n(Object.keys(BADGES).length)} شَارَاتٍ.</div></div>
+  app.innerHTML=`<div class="col"><div class="hero">${DUO}<div class="say">جَمَعْنَا <span class="stars" style="font-size:22px">★ ${n(stars())}</span> نَجْمَةً، وَحَصَلْنَا عَلَى ${n(bg.length)} مِنْ ${n(Object.keys(BADGES).length)} شَارَاتٍ.</div></div>
   <h3>شَارَاتِي</h3><div class="grid">${Object.entries(BADGES).map(([k,b])=>`<div class="bdg ${bg.includes(k)?'':'off'}"><i>★</i><div><b>${b[0]}</b><div class="mut">${b[1]}</div></div></div>`).join('')}</div>
   <h3>تَقَدُّمِي فِي الدُّرُوسِ</h3>${LESSONS.map(L=>`<div class="card col" style="gap:4px"><div class="row" style="justify-content:space-between"><b style="color:${L.c}">${L.t}</b><b>${n(lessonPct(L))}٪</b></div><div class="bar"><i style="width:${lessonPct(L)}%"></i></div></div>`).join('')}</div>`}
 
-/* ===== لوحة المعلم ===== */
-function askPin(){const m=modal(`<h3>لوحة المعلم</h3><label for="pin">الرقم السري</label><input type="password" id="pin" inputmode="numeric" autocomplete="off"><div class="row"><button class="btn" id="pok">دخول</button><button class="btn w" data-x>إلغاء</button></div><div id="pm" class="mut"></div>`);
-  const ok=()=>{if($('#pin',m).value===DB.pin){m.remove();go(teacher,'st')}else $('#pm',m).textContent='الرقم السري غير صحيح.'};$('#pok',m).onclick=ok;$('#pin',m).onkeydown=e=>e.key==='Enter'&&ok();$('#pin',m).focus()}
-async function saveFile(name,text,mime){const blob=new Blob(['﻿'+text],{type:mime||'text/csv'});
-  if(window.claude&&window.claude.use){try{const d=await window.claude.use('downloads');if(d){await d.save({filename:name,data:blob});return}}catch(e){if(e&&e.code==='declined')return}
-    const m=modal(`<h3>${name}</h3><div class="mut">تعذّر حفظ الملف مباشرة من هذه الصفحة. انسخ المحتوى والصقه في ملف بالاسم أعلاه.</div><textarea rows="8" readonly id="cp" dir="ltr"></textarea><div class="row"><button class="btn" id="cpb">نسخ</button><button class="btn w" data-x>إغلاق</button></div>`);$('#cp',m).value=text;$('#cpb',m).onclick=()=>{navigator.clipboard.writeText(text).then(()=>toast('تم النسخ')).catch(()=>$('#cp',m).select())};return}
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove()}
-function csv(){const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['الطالب','الجنس','الدرس','النوع','البند','المهارة','النجوم','الدقة٪','الأخطاء','المحاولات','الزمن بالثواني','كلمة/دقيقة','صحيحة','كلمات النص','محذوفة','مضافة','مكررة','التاريخ']];
-  const dt=t=>t?new Date(t).toISOString().slice(0,16).replace('T',' '):'',pl=s=>s.replace(/[ً-ْ]/g,'');
-  Object.values(DB.st).forEach(m=>{const b=[m.name,m.av==='g'?'طالبة':'طالب'];rows.push([...b,'','ملخص','إجمالي','',stars(m),'','','',m.sec||0,'','','','','','',dt(m.at)]);
-    LESSONS.forEach(L=>{const P=LP(L.id,m),ln=pl(L.t);L.games.forEach((g,k)=>{const r=P.games[k];if(r)rows.push([...b,ln,'لعبة',pl(g.n),pl(SK[g.sk]),r.best,'',r.err,r.tries,r.sec,'','','','','','',dt(r.at)])});
-      L.scenes.forEach((s,k)=>{if(P.scenes[k])rows.push([...b,ln,'مشهد',pl(s.t),pl(SK.d),1,'','','','','','','','','','',''])});
-      P.reads.forEach(r=>rows.push([...b,ln,'قراءة',pl(levels(L)[r.lv][0])+(r.orig?' (نص الكتاب)':' (نص تدريبي)'),pl(SK.f),r.st,r.acc,r.bad,'',r.dur,r.wpm,r.ok,r.tot,r.miss,r.add,r.rep,dt(r.at)]));
-      if(P.quiz)rows.push([...b,ln,'تقويم قصير','الدرجة من '+P.quiz.total,'',P.quiz.score,'','','','','','','','','','',dt(P.quiz.at)]);
-      if(P.self)rows.push([...b,ln,'رأي المتعلم','استمتاع/تحسن/رغبة (0-2)','',P.self.join(' | '),'','','','','','','','','','',''])})});
-  return rows.map(r=>r.map(q).join(',')).join('\r\n')}
-function teacher(tab){T('لوحة المعلم');const S=Object.entries(DB.st),tabs=[['st','الطلبة'],['sk','المهارات'],['ct','المحتوى'],['rc','التسجيلات'],['dt','البيانات']];let body='';
-  if(tab==='st')body=S.length?`<div class="card col"><h3>متابعة الطلبة على هذا الجهاز (${n(S.length)})</h3><div class="tw"><table><tr><th>الاسم</th><th>الجنس</th><th>النجوم</th><th>زمن التعلم</th>${LESSONS.map(L=>`<th>د${n(L.id)}</th>`).join('')}<th>الألعاب</th><th>المشاهد</th><th>القراءات</th><th>أفضل دقة</th><th>أفضل سرعة</th></tr>${S.map(([id,m])=>{const rd=LESSONS.flatMap(L=>LP(L.id,m).reads);return `<tr><td><button data-d="${id}" style="font-weight:800;color:var(--sea-d);text-decoration:underline">${esc(m.name)}</button></td><td>${m.av==='g'?'طالبة':'طالب'}</td><td>${n(stars(m))}</td><td>${n(Math.round((m.sec||0)/60))} د</td>${LESSONS.map(L=>`<td>${n(lessonPct(L,m))}٪</td>`).join('')}<td>${n(LESSONS.reduce((a,L)=>a+Object.keys(LP(L.id,m).games).length,0))}/٢٠</td><td>${n(LESSONS.reduce((a,L)=>a+Object.keys(LP(L.id,m).scenes).length,0))}/٣٠</td><td>${n(rd.length)}</td><td>${rd.length?n(Math.max(...rd.map(r=>r.acc)))+'٪':'—'}</td><td>${rd.length?n(Math.max(...rd.map(r=>r.wpm))):'—'}</td></tr>`}).join('')}</table></div><div class="mut">اضغط اسم الطالب لعرض تقريره الفردي. البيانات محفوظة على هذا الجهاز فقط.</div></div>`:'<div class="card">لا يوجد طلبة مسجلون على هذا الجهاز بعد.</div>';
-  if(tab==='sk'){const sk={};S.forEach(([id,m])=>LESSONS.forEach(L=>L.games.forEach((g,k)=>{const r=LP(L.id,m).games[k];if(r){sk[g.sk]=sk[g.sk]||[0,0];sk[g.sk][0]+=r.best;sk[g.sk][1]++}})));
-    body=`<div class="card col"><h3>متوسط إتقان المهارات (من ٣ نجوم)</h3><div class="tw"><table><tr><th>المهارة</th><th>المتوسط</th><th>عدد النتائج</th></tr>${Object.entries(SK).map(([k,v])=>`<tr><td>${v}</td><td>${sk[k]?n((sk[k][0]/sk[k][1]).toFixed(1)):'—'}</td><td>${sk[k]?n(sk[k][1]):'٠'}</td></tr>`).join('')}</table></div></div>
-    <div class="card col"><h3>جدول الربط: اللعبة ← المهارة ← مؤشر الأداء ← طريقة القياس</h3><div class="tw"><table><tr><th>الدرس</th><th>اللعبة / النشاط</th><th>المهارة</th><th>مؤشر الأداء</th><th>طريقة القياس</th><th>المشهد المرتبط</th></tr>${LESSONS.map(L=>L.games.map(g=>`<tr><td>${n(L.id)}</td><td>${g.n}</td><td>${SK[g.sk]}</td><td>${g.ind}</td><td>${g.ty==='recite'?'إتمام الإنشاد ودقة المطابقة الصوتية':g.ty==='opinion'?'أخطاء الاستنتاج + تسجيل الرأي':'النجوم، عدد الأخطاء، المحاولات، الزمن'}</td><td>${L.scenes[g.sc].t}</td></tr>`).join('')+`<tr><td>${n(L.id)}</td><td>المشاهد الستة</td><td>${SK.c} + ${SK.d}</td><td>يقرأ كلمات المشهد وجمله ويجيب عن مهمته</td><td>إنجاز المهمة + دقة القراءة الصوتية للجملة</td><td>—</td></tr><tr><td>${n(L.id)}</td><td>أقرأ بطلاقة</td><td>${SK.f}</td><td>يقرأ بدقة وسرعة مناسبة</td><td>الدقة٪، كلمة/دقيقة، المحذوف والمضاف والمكرر</td><td>—</td></tr>`).join('')}</table></div></div>`}
-  if(tab==='ct')body=`<div class="card col"><h3>نصوص الدروس الأصلية</h3><div class="mut">ألصقي نص كل درس مشكولًا كما في الكتاب. في النصوص الشعرية اجعلي كل بيت في سطر. بعد الحفظ تُبنى منه القراءة المتدرجة وألعاب الإكمال وبناء الجمل والإنشاد والحفظ تلقائيًا. الحفظ هنا يخص هذا الجهاز؛ ولإيصال النصوص إلى أجهزة الطلبة كلها نزّلي ملف content.json وضعيه بجوار ملف المنصة على الاستضافة.</div></div>${LESSONS.map(L=>`<div class="card col"><label for="c${L.id}"><b>${n(L.id)}. ${L.t}</b> <span class="mut">ص ${L.pages}${L.own?' · لا نص له في الكتاب؛ النص هنا يستبدل قصة المنصة في القراءة فقط':''}</span></label><textarea id="c${L.id}" rows="5">${esc(DB.content[L.id]||SITE[L.id]||'')}</textarea><div class="mut" id="w${L.id}"></div></div>`).join('')}<div class="row c"><button class="btn g" id="csv">حفظ النصوص</button><button class="btn" id="cdl">تنزيل content.json</button></div>`;
-  if(tab==='rc')body='<div class="card col" id="rcl"><h3>تسجيلات القراءة المحفوظة على هذا الجهاز</h3><div class="mut">تُحفظ عند تعذّر التصحيح الآلي فقط، ولا تُرسل إلى أي مكان.</div></div>';
-  if(tab==='dt')body=`<div class="card col"><h3>تصدير البيانات</h3><div class="mut">ملف CSV يفتح في Excel: نتائج الألعاب والمشاهد والقراءة والتقويم لكل طالب على هذا الجهاز.</div><button class="btn g" id="ex">تصدير CSV</button></div><div class="card col"><h3>الرقم السري</h3><input type="text" id="np" inputmode="numeric" value="${esc(DB.pin)}"><button class="btn sm" id="sp" style="align-self:start">حفظ الرقم</button></div><div class="card col"><h3>حذف بيانات هذا الجهاز</h3><button class="btn r sm" id="del" style="align-self:start">حذف كل بيانات الطلبة</button></div>`;
-  app.innerHTML=`<div class="col"><div class="tabs">${tabs.map(t=>`<button class="${t[0]===tab?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>${body}</div>`;
-  $$('.tabs button').forEach(b=>b.onclick=()=>{stack[stack.length-1][1][0]=b.dataset.t;draw()});
-  $$('[data-d]').forEach(b=>b.onclick=()=>{const m=DB.st[b.dataset.d];modal(`<h3>${esc(m.name)}</h3>${LESSONS.map(L=>{const P=LP(L.id,m);return `<b style="color:${L.c}">${L.t} · ${n(lessonPct(L,m))}٪</b><div class="tw"><table><tr><th>النشاط</th><th>النجوم</th><th>الأخطاء</th><th>المحاولات</th><th>الزمن</th></tr>${L.games.map((g,k)=>{const r=P.games[k];return `<tr><td>${g.n}</td><td>${r?n(r.best):'—'}</td><td>${r?n(r.err):'—'}</td><td>${r?n(r.tries):'—'}</td><td>${r?n(r.sec)+' ث':'—'}</td></tr>`}).join('')}${P.reads.map(r=>`<tr><td>قراءة: ${levels(L)[r.lv][0]}</td><td>${n(r.st)}</td><td>دقة ${n(r.acc)}٪</td><td>${n(r.wpm)} ك/د</td><td>${n(r.dur)} ث</td></tr>`).join('')}</table></div>`}).join('')}<button class="btn w" data-x>إغلاق</button>`)});
-  if(tab==='ct'){$('#csv').onclick=()=>{LESSONS.forEach(L=>{const v=$('#c'+L.id).value.trim();if(v)DB.content[L.id]=v;else delete DB.content[L.id];$('#w'+L.id).textContent=v?`حُفظ: ${n(wordsOf(v).length)} كلمة${/[ً-ْ]/.test(v)?'':' — تنبيه: النص بلا حركات'}`:''});save();toast('حُفظت النصوص على هذا الجهاز.')};
-    $('#cdl').onclick=()=>{const o={};LESSONS.forEach(L=>{const v=$('#c'+L.id).value.trim();if(v)o[L.id]=v});saveFile('content.json',JSON.stringify(o,null,1),'application/json')}}
-  if(tab==='rc')recAll().then(a=>{const box=$('#rcl');if(!box)return;if(!a.length){box.insertAdjacentHTML('beforeend','<div>لا توجد تسجيلات.</div>');return}a.sort((x,y)=>y.at-x.at).forEach(r=>{const d=el(`<div class="col" style="gap:2px;border-top:2px solid var(--line);padding-top:8px"><b>${esc(r.name)} · ${Lof(r.lesson).t} · ${levels(Lof(r.lesson))[r.lv][0]} · ${n(r.dur)} ث</b><audio controls style="width:100%"></audio></div>`);$('audio',d).src=URL.createObjectURL(r.blob);box.append(d)})});
-  if(tab==='dt'){$('#ex').onclick=()=>saveFile('reading-results.csv',csv());$('#sp').onclick=()=>{const v=$('#np').value.trim();if(v){DB.pin=v;save();toast('حُفظ الرقم السري.')}};let arm=false;$('#del').onclick=()=>{if(!arm){arm=true;$('#del').textContent='اضغط مرة ثانية لتأكيد الحذف';return}DB.st={};DB.cur=null;save();try{indexedDB.deleteDatabase(KEY)}catch(e){}stack=[[login,[]]];draw()}}}
-
-stack=[[me()?home:login,[]]];draw();
+if(!me()){DB.st={c:{name:'الصف',av:'b',badges:[],sec:0,L:{},at:Date.now()}};DB.cur='c';save()}
+stack=[[home,[]]];draw();
 </script>
 </body></html>
